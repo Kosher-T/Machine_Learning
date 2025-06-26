@@ -18,14 +18,28 @@ class KMeans:
             centroids.append(cluster_points[i])
             if len(centroids) == self.k:
                 break
-'''
+
         # For each point in the dataset, find the nearest centroid using Euclidean distance
         distances = []
+        
+        count = 0
         for point in cluster_points:
             for centroid in centroids:
                 dist = euclidian_distance(point, centroid)
                 distances.append((dist, point, centroid))  # saving all three just in case
+                count += 1
+                print(f"Distances variable: {distances}, count = {count}\n")
+            # Distance at this point is now a list of tuples with (distance, point, centroid)
+            # This is where I sort and find the closest centroid
+            distances.sort(key=lambda x: x[0])
+            print(f"Sorted distances: {distances}\n")
+            closest_centroid = distances[0][2]  # Get the closest centroid
+            print(f"Closest centroid: {closest_centroid} for point {point}\n")
 
+            if count == 3:
+                break
+
+'''
         closest = dist.sort(key=lambda x: x[0])[0]  # Get the closest point
 
         print(closest)

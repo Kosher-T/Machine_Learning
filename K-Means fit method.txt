@@ -13,12 +13,14 @@ class KMeans:
         centroids = []
         # Time to debug the code
         
+        
+'''
         if len(centroids) < self.k:
             for i in range(2, len(cluster_points), 2):  # i = 2, 4, 6, 8
                 centroids.append(cluster_points[i])
         print(centroids)  # This should print the centroids we are trying to find
 
-'''
+
         # For each point in the dataset, find the nearest centroid using Euclidean distance
         distances = []
         for point in cluster_points:

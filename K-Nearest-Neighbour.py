@@ -2,12 +2,21 @@ from collections import Counter
 
 
 class KNN:
-    def __init__(self, k):
+    '''
+    A simple implementation of the K-Nearest Neighbors algorithm.
+    This class allows you to fit a model to training data and make predictions on test data.
+    '''
+    def __init__(self, k: int):
         self.points = None
         self.labels = None
         self.k = k
     
-    def distance(self, point_a, point_b):
+    def distance(self, point_a: list, point_b: list) -> float:
+        '''
+        Calculate the Euclidean distance between two points.
+        :param point_a: First point as a list of coordinates.
+        :param point_b: Second point as a list of coordinates.
+        '''
         sum_dist = 0
         
         for i in range(0, len(point_a)):
@@ -15,11 +24,21 @@ class KNN:
             dist = sum_dist ** 0.5
         return float(dist)
     
-    def fit(self, X_train, y_train):
+    def fit(self, X_train: list, y_train: list) -> None:
+        '''
+        Fit the KNN model to the training data.
+        :param X_train: Training data as a list of points (each point is a list of coordinates).
+        :param y_train: Labels for the training data as a list.
+        '''
         self.points = X_train
         self.labels = y_train
 
-    def predict(self, X_test):
+    def predict(self, X_test: list) -> list:
+        '''
+        Predict the labels for the test data using the fitted KNN model.
+        :param X_test: Test data as a list of points (each point is a list of coordinates).
+        :return: List of predicted labels for the test data.
+        '''
         predictions = []
 
         for test_point in X_test:

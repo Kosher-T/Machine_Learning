@@ -66,17 +66,18 @@ class KMeans:
         dista = True
 
         while dista:
+            updates = {}
+            max_shift = 0
             for centroid, new_cluster in cluster.items():
-                # I have the first cluster. I need to find the new centroid
                 new_centroid = cluster_centroid(new_cluster)
-                # I will now check the distance of the new centroid from the old centroid
                 distance = euclidian_distance(new_centroid, centroid)
-                if distance < 0.01:
-                    dista = False
-                else:
-                    # Update the centroid with the new centroid
-                    del cluster[centroid]
-                    cluster[tuple(new_centroid)] = new_cluster
+                max_shift = max(max_shift, distance)
+                updates[tuple(new_centroid)] = new_cluster
+            if max_shift < 0.01:
+                dista = False
+            else:
+                cluster.clear()
+                cluster.update(updates)
         
         self.centroids = centroids
     

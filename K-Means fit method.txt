@@ -66,18 +66,18 @@ class KMeans:
         dista = True
 
         while dista:
-            for centroid, each_cluster in cluster.items():
-                new_cluster = each_cluster
-                # I have the cluster. I need to find the new centroid for this cluster using the mean of the points
-                # in the cluster
+            updates = {}
+            max_shift = 0
+            for centroid, new_cluster in cluster.items():
                 new_centroid = cluster_centroid(new_cluster)
-                # I will now check the distance of the new centroid from the old centroid
                 distance = euclidian_distance(new_centroid, centroid)
-                if distance < 0.01:
-                    dista = False
-                else:
-                    # Update the centroid with the new centroid
-                    cluster[tuple(centroid)] = new_centroid
+                max_shift = max(max_shift, distance)
+                updates[tuple(new_centroid)] = new_cluster
+            if max_shift < 0.01:
+                dista = False
+            else:
+                cluster.clear()
+                cluster.update(updates)
         
         self.centroids = centroids
     

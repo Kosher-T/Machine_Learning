@@ -1,91 +1,94 @@
-def euclidian_distance(point_a, point_b):
-    return (sum([(point_a[i] - point_b[i])**2 for i in range(len(point_a))]))**0.5
+from copy import deepcopy
 
+def euclidian_distance(a, b):
+    return sum((a_i - b_i)**2 for a_i, b_i in zip(a, b))**0.5
 
 class KMeans:
-    def __init__(self, k):
+    def __init__(self, k, tol=0.01, max_iter=300):
         self.k = k
+        self.tol = tol
+        self.max_iter = max_iter
+        self.centroids = []
 
-    def find_cluster_centroid(self, cluster_points: list) -> dict:
-        '''
-        This function finds the cluster centroids from the given cluster points.
-        It uses the Euclidean distance to find the closest centroid for each point,
-        and returns a dictionary where keys are centroids and values are the clusters
-        '''
-        # [[8, 43], [67, 48], [43, 80], [16, 87], [5, 42], [54, 11], [21, 56], [65, 74], [74, 67], [65, 62]]
+    def find_cluster_centroid(self, points):
+        """
+        Assigns each point in `points` to the nearest centroid.
+        Returns a dict mapping each centroid (tuple) -> list of assigned points.
+        If self.centroids is empty, picks the 3rd,5th,7th… points as init.
+        """
+        # 1) Initialize if first call
+        if not self.centroids:
+            init = []
+            for i in range(2, len(points), 2):    # 3rd,5th,7th...
+                init.append(points[i])
+                if len(init) == self.k:
+                    break
+            self.centroids = deepcopy(init)
 
-        n = len(cluster_points)  # n = 10
-        centroids = []
-        
-        # I need to get k number of points from the dataset to use as centroids
-        for i in range(2, len(cluster_points), 2):  # i = 2, 4, 6, 8
-            centroids.append(cluster_points[i])
-            if len(centroids) == self.k:
-                break
+        # 2) Build empty clusters
+        clusters = {tuple(c): [] for c in self.centroids}
 
-        distances = []
-        centroid_point_pairs = []
-        for point in cluster_points:
-            for centroid in centroids:
-                dist = euclidian_distance(point, centroid)
-                distances.append((dist, point, centroid))  # saving all three just in case
-            
-            # Distance at this point is now a list of tuples with (distance, point, centroid)
-            # This is where I sort and find the closest centroid
-            distances.sort(key=lambda x: x[0])
-            closest_centroid = distances[0][2]  # Get the closest centroid
-            centroid_point_pairs.append([point, closest_centroid])
-            distances = []
-
-        # At this point, I have the closest centroid for each point in the dataset
-        # Now I need to group the points by their closest centroid
-        clusters = {tuple(centroid): [] for centroid in centroids}
-        for point, centroid in centroid_point_pairs:
-            clusters[tuple(centroid)].append(point)
+        # 3) Assign points
+        for p in points:
+            # find closest centroid
+            dists = [euclidian_distance(p, c) for c in self.centroids]
+            idx = dists.index(min(dists))
+            clusters[tuple(self.centroids[idx])].append(p)
 
         return clusters
 
+    def fit(self, X):
+        """
+        Runs k-means until centroids move < tol or max_iter reached.
+        Saves final centroids in self.centroids.
+        """
+        for iteration in range(self.max_iter):
+            clusters = self.find_cluster_centroid(X)
 
-    def fit(self, X_train):
-        # Write you code here
-        def cluster_centroid(dataset: list) -> list:
-            '''
-            # This function will find the cluster centroid for the given training data
-            '''
-            return [sum(coord) / len(new_cluster) for coord in zip(*dataset)]
+            new_centroids = []
+            shifts = []
 
-        cluster = self.find_cluster_centroid(X_train)
-        # cluster = {
-        #           (43, 80): [[67, 48], [43, 80], [16, 87], [65, 74], [74, 67], [65, 62]],
-        #           (5, 42): [[8, 43], [5, 42]],
-        #           (21, 56): [[54, 11], [21, 56]]
-        #           }
+            # 4) Compute new centroids & track shifts
+            for old_cent in self.centroids:
+                pts = clusters[tuple(old_cent)]
+                # avoid empty cluster
+                if not pts:
+                    new_centroids.append(old_cent)
+                    shifts.append(0)
+                    continue
+                # mean of each dimension
+                dim_means = [sum(dim_vals)/len(pts)
+                             for dim_vals in zip(*pts)]
+                new_centroids.append(dim_means)
+                shifts.append(euclidian_distance(dim_means, old_cent))
 
-        dista = True
+            # 5) Check for convergence
+            max_shift = max(shifts)
+            if max_shift < self.tol:
+                break
 
-        while dista:
-            updates = {}
-            max_shift = 0
-            for centroid, new_cluster in cluster.items():
-                new_centroid = cluster_centroid(new_cluster)
-                distance = euclidian_distance(new_centroid, centroid)
-                max_shift = max(max_shift, distance)
-                updates[tuple(new_centroid)] = new_cluster
-            if max_shift < 0.01:
-                dista = False
-            else:
-                cluster.clear()
-                cluster.update(updates)
+            # 6) Update centroids & loop
+            self.centroids = deepcopy(new_centroids)
 
-        self.centroids = list(cluster.keys())
         print("Centroids:", self.centroids)
-    
-    def predict(self, X_test):
-        pass
 
+    def predict(self, X):
+        """
+        For each x in X, returns the index of the nearest centroid.
+        """
+        labels = []
+        for p in X:
+            dists = [euclidian_distance(p, c) for c in self.centroids]
+            labels.append(dists.index(min(dists)))
+        return labels
 
 if __name__ == "__main__":
     kmeans = KMeans(3)
-    cluster_points = [[8, 43], [67, 48], [43, 80], [16, 87], [5, 42], [54, 11], [21, 56], [65, 74], [74, 67], [65, 62]]
-    kmeans.fit(cluster_points)
-    # Expected output: latest centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]
+    pts = [
+        [8, 43],[67, 48],[43, 80],[16, 87],[5, 42],
+        [54, 11],[21, 56],[65, 74],[74, 67],[65, 62]
+    ]
+    kmeans.fit(pts)
+    # Should print something like:
+    # Centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]
+    print("Labels:", kmeans.predict(pts))

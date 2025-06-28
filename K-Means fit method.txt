@@ -78,19 +78,16 @@ class KMeans:
             else:
                 cluster.clear()
                 cluster.update(updates)
-        
-        self.centroids = cluster.keys()
+
+        self.centroids = list(cluster.keys())
+        print("Centroids:", self.centroids)
     
     def predict(self, X_test):
         pass
-'''
+
 
 if __name__ == "__main__":
     kmeans = KMeans(3)
     cluster_points = [[8, 43], [67, 48], [43, 80], [16, 87], [5, 42], [54, 11], [21, 56], [65, 74], [74, 67], [65, 62]]
-    kmeans.find_cluster_centroid(cluster_points)
-    # Expected output: centroids and their cluster points
-
-    I have a little issue in Git in VS Code. I didn't have this problem a few hours ago. I don't know what's changed
-been waiting for. I'm tired anyway. I slept for only five hours last night.
-    '''
+    kmeans.fit(cluster_points)
+    # Expected output: latest centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]

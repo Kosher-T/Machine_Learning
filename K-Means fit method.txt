@@ -16,14 +16,12 @@ class KMeans:
 
         n = len(cluster_points)  # n = 10
         centroids = []
-        # Time to debug the code
         
         # I need to get k number of points from the dataset to use as centroids
         for i in range(2, len(cluster_points), 2):  # i = 2, 4, 6, 8
             centroids.append(cluster_points[i])
             if len(centroids) == self.k:
                 break
-
 
         distances = []
         centroid_point_pairs = []

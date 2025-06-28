@@ -38,39 +38,40 @@ class KMeans:
         return clusters
 
 
-    def fit(self, X_train):
-        # Write you code here
-        def cluster_centroid(dataset: list) -> list:
-            '''
-            # This function will find the cluster centroid for the given training data
-            '''
-            return [sum(coord) / len(new_cluster) for coord in zip(*dataset)]
+    def fit(self, X):
+        """
+        Runs k-means until centroids move < tol or max_iter reached.
+        Saves final centroids in self.centroids.
+        """
+        for iteration in range(self.max_iter):
+            clusters = self.find_cluster_centroid(X)
 
-        cluster = self.find_cluster_centroid(X_train)
-        # cluster = {
-        #           (43, 80): [[67, 48], [43, 80], [16, 87], [65, 74], [74, 67], [65, 62]],
-        #           (5, 42): [[8, 43], [5, 42]],
-        #           (21, 56): [[54, 11], [21, 56]]
-        #           }
+            new_centroids = []
+            shifts = []
 
-        dista = True
+            # 4) Compute new centroids & track shifts
+            for old_cent in self.centroids:
+                pts = clusters[tuple(old_cent)]
+                # avoid empty cluster
+                if not pts:
+                    new_centroids.append(old_cent)
+                    shifts.append(0)
+                    continue
+                # mean of each dimension
+                dim_means = [sum(dim_vals)/len(pts)
+                             for dim_vals in zip(*pts)]
+                new_centroids.append(dim_means)
+                shifts.append(euclidian_distance(dim_means, old_cent))
 
-        while dista:
-            updates = {}
-            max_shift = 0
-            for centroid, new_cluster in cluster.items():
-                new_centroid = cluster_centroid(new_cluster)
-                distance = euclidian_distance(new_centroid, centroid)
-                max_shift = max(max_shift, distance)
-                updates[tuple(new_centroid)] = new_cluster
-            if max_shift < 0.01:
-                dista = False
-            else:
-                cluster.clear()
-                cluster.update(updates)
+            # 5) Check for convergence
+            max_shift = max(shifts)
+            if max_shift < self.tol:
+                break
 
-        self.centroids = list(cluster.keys())
-        print("Centroids:", self.centroids)
+            # 6) Update centroids & loop
+            self.centroids = deepcopy(new_centroids)
+
+        print("Centroids:", self.centroids)  # Foor the challenge, this isn't needed
     
     def predict(self, X_test):
         pass

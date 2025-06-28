@@ -89,6 +89,6 @@ if __name__ == "__main__":
         [54, 11],[21, 56],[65, 74],[74, 67],[65, 62]
     ]
     kmeans.fit(pts)
-    # Should print something like:
+    # Output should be:
     # Centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]
     print("Labels:", kmeans.predict(pts))

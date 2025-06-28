@@ -73,12 +73,22 @@ class KMeans:
 
         print("Centroids:", self.centroids)  # Foor the challenge, this isn't needed
     
-    def predict(self, X_test):
-        pass
-
+    def predict(self, X):
+        """
+        For each x in X, returns the index of the nearest centroid.
+        """
+        labels = []
+        for p in X:
+            dists = [euclidian_distance(p, c) for c in self.centroids]
+            labels.append(dists.index(min(dists)))
+        return labels
 
 if __name__ == "__main__":
     kmeans = KMeans(3)
-    cluster_points = [[8, 43], [67, 48], [43, 80], [16, 87], [5, 42], [54, 11], [21, 56], [65, 74], [74, 67], [65, 62]]
-    kmeans.fit(cluster_points)
-    # Expected output: latest centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]
+    pts = [
+        [8, 43],[67, 48],[43, 80],[16, 87],[5, 42],
+        [54, 11],[21, 56],[65, 74],[74, 67],[65, 62]
+    ]
+    kmeans.fit(pts)
+    # Output should be "Centroids: [[62.8, 66.2], [12.5, 57.0], [54.0, 11.0]]""
+    print("Labels:", kmeans.predict(pts))

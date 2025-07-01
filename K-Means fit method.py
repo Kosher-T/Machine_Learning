@@ -37,6 +37,7 @@ class KMeans:
 
         return clusters
 
+    
     def fit(self, X):
         """
         Runs k-means until centroids move < tol or max_iter reached.

@@ -37,7 +37,6 @@ class KMeans:
 
         return clusters
 
-
     def fit(self, X):
         """
         Runs k-means until centroids move < tol or max_iter reached.
@@ -71,8 +70,8 @@ class KMeans:
             # 6) Update centroids & loop
             self.centroids = deepcopy(new_centroids)
 
-        print("Centroids:", self.centroids)  # Foor the challenge, this isn't needed
-    
+        print("Centroids:", self.centroids)
+
     def predict(self, X):
         """
         For each x in X, returns the index of the nearest centroid.

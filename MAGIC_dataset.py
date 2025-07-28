@@ -65,14 +65,22 @@ def scale_dataset(dataframe, oversample=False):
     
     # Standardize features to zero mean and unit variance
     scaler = StandardScaler()
-    X = scaler.fit_transform(X)
+    X = scaler.fit_transform(X)  # fit gets the mean and std, transform applies the formula (value - mean) / std to each feature
     
     # Optionally balance classes using random oversampling
     if oversample:
         rods = RandomOverSampler()
-        X, y = rods.fit_resample(X, y)
-    
+        X_res, y_res = rods.fit_resample(X, y)  # fit finds the value in (y) that appears the least number of times, resample duplicates random
+                                     # rows of the least appearing value until the len matches the most appearing value, making them equal
+
     # Combine features and target for convenience
-    data = np.hstack((X, np.reshape(y, (-1, 1))))
+    data = np.hstack((X, np.reshape(y, (-1, 1))))  # np.hstack() takes one argument, a tuple of arrays to stack horizontally
+                                                   # np.reshaped turns our horizontal y into a vertical column vector to match the shape of X
+                                                   # Combined, they simply create an array where y is just another column at the end of X
 
     return data, X, y   # Return the processed data
+
+
+train, X_train, y_train = scale_dataset(train, oversample=True)
+valid, X_valid, y_valid = scale_dataset(valid, oversample=True)
+test, X_test, y_test = scale_dataset(test, oversample=True)

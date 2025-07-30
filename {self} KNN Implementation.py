@@ -96,6 +96,7 @@ def euclid(point_a, point_b):
 
 # Second step, KNN function
 def k_nearest_optimized(point, train_features, train_labels, k=5):
+    # Need to understand this part especially well
     # 1. Calculate all distances at once (super fast)
     distances = np.linalg.norm(train_features - point, axis=1)
 

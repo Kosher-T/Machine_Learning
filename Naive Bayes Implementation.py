@@ -88,10 +88,6 @@ valid, X_valid, y_valid = scale_dataset(valid, oversample=False)
 test, X_test, y_test = scale_dataset(test, oversample=False)
 
 
-
-
-
-
 nb_model = GaussianNB()  # Initialize the Naive Bayes model
 nb_model = nb_model.fit(X_train, y_train)
 

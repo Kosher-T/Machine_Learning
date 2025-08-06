@@ -1,3 +1,5 @@
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report, accuracy_score
 # Import necessary libraries
 import numpy as np                           # For numerical operations and array handling
 import pandas as pd                          # For data manipulation and analysis
@@ -84,3 +86,16 @@ def scale_dataset(dataframe, oversample=False):
 train, X_train, y_train = scale_dataset(train, oversample=True)
 valid, X_valid, y_valid = scale_dataset(valid, oversample=False)
 test, X_test, y_test = scale_dataset(test, oversample=False)
+
+
+
+
+
+
+nb_model = GaussianNB()  # Initialize the Naive Bayes model
+nb_model = nb_model.fit(X_train, y_train)
+
+y_pred = nb_model.predict(X_test)
+print(classification_report(y_test, y_pred))
+accuracy_sklearn = accuracy_score(y_test, y_pred)
+print(f"Accuracy for Sklearn's Naive Bayes Implementation: {accuracy_sklearn:.4f}")

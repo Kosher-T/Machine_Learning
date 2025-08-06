@@ -96,5 +96,5 @@ y_pred = knn_model.predict(X_test)
 
 print(classification_report(y_test, y_pred))
 
-accuracy_sklearn = accuracy_score(y_test, y_pred)
-print(f"Accuracy for Sklearn's KNN Implementation: {accuracy_sklearn:.4f}")
+accuracy_sklearrn = accuracy_score(y_test, y_pred)
+print(f"Accuracy for Sklearn's KNN Implementation: {accuracy_sklearrn:.4f}")

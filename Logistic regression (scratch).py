@@ -147,3 +147,33 @@ print(f"Train Accuracy: {np.mean(train_preds == y_train) * 100:.2f}%")
 print(f"Valid Accuracy: {np.mean(valid_preds == y_valid) * 100:.2f}%")
 print(f"Test Accuracy : {np.mean(test_preds == y_test) * 100:.2f}%")
 
+# -------------------------
+# Visualize Decision Boundary (2D slice)
+# -------------------------
+def plot_decision_boundary(X, y, W, b, feature_idx=(0, 1)):
+    """
+    Plots a 2D decision boundary using two selected features.
+    feature_idx: tuple of two column indices from X to plot.
+    """
+    f1, f2 = feature_idx
+    x_min, x_max = X[:, f1].min() - 1, X[:, f1].max() + 1
+    y_min, y_max = X[:, f2].min() - 1, X[:, f2].max() + 1
+
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 200),
+                         np.linspace(y_min, y_max, 200))
+
+    grid = np.zeros((xx.ravel().shape[0], X.shape[1]))
+    grid[:, f1] = xx.ravel()
+    grid[:, f2] = yy.ravel()
+
+    Z = predict(grid, W, b).reshape(xx.shape)
+
+    plt.contourf(xx, yy, Z, alpha=0.3, cmap=plt.cm.coolwarm)
+    plt.scatter(X[:, f1], X[:, f2], c=y, edgecolors='k', cmap=plt.cm.coolwarm)
+    plt.xlabel(cols[f1])
+    plt.ylabel(cols[f2])
+    plt.title(f"Decision Boundary ({cols[f1]} vs {cols[f2]})")
+    plt.show()
+
+# Example: plot boundary using feature 0 (fLength) and 1 (fWidth)
+plot_decision_boundary(X_train, y_train, W, b, feature_idx=(0, 1))

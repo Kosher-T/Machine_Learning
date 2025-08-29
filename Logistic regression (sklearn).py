@@ -80,3 +80,22 @@ def scale_dataset(dataframe, oversample=False):
 
     return data, X, y   # Return the processed data
 
+
+train, X_train, y_train = scale_dataset(train, oversample=True)
+valid, X_valid, y_valid = scale_dataset(valid, oversample=False)
+test, X_test, y_test = scale_dataset(test, oversample=False)
+
+
+# Logistic Regression model implementation with sklearn
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score          # This helps calculate how often the model is correct
+from sklearn.metrics import classification_report   # This gives a detailed report on how well the model classified each category
+
+
+lg_model = LogisticRegression()
+lg_model = lg_model.fit(X_train, y_train)
+
+y_pred = lg_model.predict(X_test)
+print(classification_report(y_test, y_pred))
+accuracy_sklearn = accuracy_score(y_test, y_pred)
+print(f"Accuracy for Sklearn's Naive Bayes Implementation: {accuracy_sklearn:.4f}")

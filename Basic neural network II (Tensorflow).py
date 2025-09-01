@@ -90,39 +90,42 @@ test, X_test, y_test = scale_dataset(test, oversample=False)
 
 from sklearn.metrics import classification_report
 import tensorflow as tf
+from keras import Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import Adam
 
 def plot_history(history):
-  fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-  ax1.plot(history.history['loss'], label='loss')
-  ax1.plot(history.history['val_loss'], label='val_loss')
-  ax1.set_xlabel('Epoch')
-  ax1.set_ylabel('Binary crossentropy')
-  ax1.grid(True)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    ax1.plot(history.history['loss'], label='loss')
+    ax1.plot(history.history['val_loss'], label='val_loss')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Binary crossentropy')
+    ax1.grid(True)
 
-  ax2.plot(history.history['accuracy'], label='accuracy')
-  ax2.plot(history.history['val_accuracy'], label='val_accuracy')
-  ax2.set_xlabel('Epoch')
-  ax2.set_ylabel('Accuracy')
-  ax2.grid(True)
+    ax2.plot(history.history['accuracy'], label='accuracy')
+    ax2.plot(history.history['val_accuracy'], label='val_accuracy')
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('Accuracy')
+    ax2.grid(True)
 
-  plt.show()
+    plt.show()
 
 def train_model(X_train, y_train, num_nodes, dropout_prob, lr, batch_size, epochs):
-  nn_model = tf.keras.Sequential([
-      tf.keras.layers.Dense(num_nodes, activation='relu', input_shape=(10,)),
-      tf.keras.layers.Dropout(dropout_prob),
-      tf.keras.layers.Dense(num_nodes, activation='relu'),
-      tf.keras.layers.Dropout(dropout_prob),
-      tf.keras.layers.Dense(1, activation='sigmoid')
-  ])
+    nn_model = Sequential([
+        Dense(num_nodes, activation='relu', input_shape=(10,)),
+        Dropout(dropout_prob),
+        Dense(num_nodes, activation='relu'),
+        Dropout(dropout_prob),
+        Dense(1, activation='sigmoid')
+    ])
 
-  nn_model.compile(optimizer=tf.keras.optimizers.Adam(lr), loss='binary_crossentropy',
-                  metrics=['accuracy'])
-  history = nn_model.fit(
-    X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2, verbose=0
-  )
+    nn_model.compile(optimizer=Adam(lr), loss='binary_crossentropy',
+                    metrics=['accuracy'])
+    history = nn_model.fit(
+        X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2, verbose=0
+    )
 
-  return nn_model, history
+    return nn_model, history
 
 least_val_loss = float('inf')
 least_loss_model = None

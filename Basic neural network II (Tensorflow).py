@@ -90,7 +90,7 @@ test, X_test, y_test = scale_dataset(test, oversample=False)
 
 from sklearn.metrics import classification_report
 import tensorflow as tf
-from keras import Sequential
+from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.optimizers import Adam
 

@@ -70,7 +70,7 @@ def scale_dataset(dataframe, oversample=False):
     # Optionally balance classes using random oversampling
     if oversample:
         rods = RandomOverSampler()
-        X_res, y_res = rods.fit_resample(X, y)  # fit finds the value in (y) that appears the least number of times, resample duplicates random
+        X_res, y_res = rods.fit_resample(X, y)  # fit finds the value in (y) that appears the least number of times, resample duplicates random              # type: ignore
                                      # rows of the least appearing value until the len matches the most appearing value, making them equal
 
     # Combine features and target for convenience
@@ -108,10 +108,10 @@ def plot_accuracy(history):
     plt.grid(True)
     plt.show()
 
-nn_model = tf.keras.Sequential([
-    tf.keras.layers.Dense(32, activation='relu'),
-    tf.keras.layers.Dense(32, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
+nn_model = tf.keras.Sequential([                        # type: ignore
+    tf.keras.layers.Dense(32, activation='relu'),       # type: ignore
+    tf.keras.layers.Dense(32, activation='relu'),       # type: ignore
+    tf.keras.layers.Dense(1, activation='sigmoid')      # type: ignore
 ])
 
 nn_model.compile(optimizer='adam',

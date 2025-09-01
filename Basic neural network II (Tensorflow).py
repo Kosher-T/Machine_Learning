@@ -131,18 +131,20 @@ least_val_loss = float('inf')
 least_loss_model = None
 epochs=100
 for num_nodes in [16, 32, 64]:
-  for dropout_prob in[0, 0.2]:
-    for lr in [0.01, 0.005, 0.001]:
-      for batch_size in [32, 64, 128]:
-        print(f"{num_nodes} nodes, dropout {dropout_prob}, lr {lr}, batch size {batch_size}")
-        model, history = train_model(X_train, y_train, num_nodes, dropout_prob, lr, batch_size, epochs)
-        plot_history(history)
-        val_loss = model.evaluate(X_valid, y_valid)[0]
-        if val_loss < least_val_loss:
-          least_val_loss = val_loss
-          least_loss_model = model
+    for dropout_prob in[0, 0.2]:
+        for lr in [0.01, 0.005, 0.001]:
+            for batch_size in [32, 64, 128]:
+                print(f"{num_nodes} nodes, dropout {dropout_prob}, lr {lr}, batch size {batch_size}")
+                model, history = train_model(X_train, y_train, num_nodes, dropout_prob, lr, batch_size, epochs)
+                plot_history(history)
+                val_loss = model.evaluate(X_valid, y_valid)[0]
+                if val_loss < least_val_loss:
+                    least_val_loss = val_loss
+                    least_loss_model = model
 
-y_pred = least_loss_model.predict(X_test)
-y_pred = (y_pred > 0.5).astype(int).reshape(-1,)
-
-print(classification_report(y_test, y_pred))
+if least_loss_model is not None:
+    y_pred = least_loss_model.predict(X_test)
+    y_pred = (y_pred > 0.5).astype(int).reshape(-1,)
+    print(classification_report(y_test, y_pred))
+else:
+    print("No model was trained successfully. Please check your data and hyperparameters.")

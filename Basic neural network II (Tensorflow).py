@@ -70,7 +70,7 @@ def scale_dataset(dataframe, oversample=False):
     # Optionally balance classes using random oversampling
     if oversample:
         rods = RandomOverSampler()
-        X_res, y_res = rods.fit_resample(X, y)  # fit finds the value in (y) that appears the least number of times, resample duplicates random
+        X, y = rods.fit_resample(X, y)  # fit finds the value in (y) that appears the least number of times, resample duplicates random          # type: ignore
                                      # rows of the least appearing value until the len matches the most appearing value, making them equal
 
     # Combine features and target for convenience
@@ -90,9 +90,9 @@ test, X_test, y_test = scale_dataset(test, oversample=False)
 
 from sklearn.metrics import classification_report
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.optimizers import Adam
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import Adam
 
 def plot_history(history):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))

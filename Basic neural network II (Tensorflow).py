@@ -90,9 +90,9 @@ test, X_test, y_test = scale_dataset(test, oversample=False)
 
 from sklearn.metrics import classification_report
 import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
 
 def plot_history(history):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
@@ -119,7 +119,7 @@ def train_model(X_train, y_train, num_nodes, dropout_prob, lr, batch_size, epoch
         Dense(1, activation='sigmoid')
     ])
 
-    nn_model.compile(optimizer=Adam(lr), loss='binary_crossentropy',
+    nn_model.compile(optimizer=Adam(learning_rate=lr), loss='binary_crossentropy',
                     metrics=['accuracy'])
     history = nn_model.fit(
         X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2, verbose=0
